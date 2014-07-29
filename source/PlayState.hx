@@ -7,6 +7,7 @@ import flixel.FlxState;
  */
 class PlayState extends FlxState {
 	private var _player:Player;
+	private var _map:TiledLevel;
 
 	/**
 	 * Function that is called up when to state is created to set it up.
