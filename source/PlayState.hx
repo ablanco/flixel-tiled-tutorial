@@ -6,15 +6,22 @@ import flixel.FlxState;
  * A FlxState which can be used for the actual gameplay.
  */
 class PlayState extends FlxState {
-	private var _player:Player;
+	public var player:Player;
 	private var _map:TiledLevel;
 
 	/**
 	 * Function that is called up when to state is created to set it up.
 	 */
 	override public function create():Void {
-		_player = new Player(20, 20);
-		add(_player);
+		// Load the level's tilemaps
+		_map = new TiledLevel("assets/data/room-001.tmx");
+		// Add tilemaps
+		add(_map.foregroundTiles);
+		// Load player objects
+		_map.loadObjects(this);
+		add(player);
+		// Add background tiles after adding level objects, so these tiles render on top of player
+		add(_map.backgroundTiles);
 
 		super.create();
 	}
