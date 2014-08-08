@@ -3,8 +3,11 @@ package ;
 import haxe.io.Path;
 
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
+
+import flixel.text.FlxText;
 
 import flixel.addons.editors.tiled.TiledMap;
 import flixel.addons.editors.tiled.TiledTileSet;
@@ -103,5 +106,19 @@ class TiledLevel extends TiledMap {
             case "player_start":
                 state.player = new Player(x, y);
         }
+    }
+
+    public function collideWithLevel(obj:FlxObject, ?notifyCallback:FlxObject->FlxObject->Void, ?processCallback:FlxObject->FlxObject->Bool):Bool {
+        if (collidableTileLayers != null) {
+            for (map in collidableTileLayers) {
+                // IMPORTANT: Always collide the map with objects, not the
+                // other way around. This prevents odd collision errors
+                // (collision separation code off by 1 px).
+                if (FlxG.overlap(map, obj, notifyCallback, processCallback != null ? processCallback : FlxObject.separate)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

@@ -17,11 +17,10 @@ class PlayState extends FlxState {
 		_map = new TiledLevel("assets/data/room-001.tmx");
 		// Add tilemaps
 		add(_map.foregroundTiles);
+		add(_map.backgroundTiles);
 		// Load player objects
 		_map.loadObjects(this);
 		add(player);
-		// Add background tiles after adding level objects, so these tiles render on top of player
-		add(_map.backgroundTiles);
 
 		super.create();
 	}
@@ -39,5 +38,8 @@ class PlayState extends FlxState {
 	 */
 	override public function update():Void {
 		super.update();
+
+		// Collide with foreground tile layer
+		_map.collideWithLevel(player);
 	}
 }

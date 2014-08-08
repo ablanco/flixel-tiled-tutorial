@@ -20,6 +20,9 @@ class Player extends FlxSprite {
         animation.add("d", [1, 2], 6, false);
 
         drag.x = drag.y = 1600;
+        // Change the hitbox so he can make it through doors and such
+        setSize(8, 14);
+        offset.set(4, 2);
     }
 
     override public function update():Void {
@@ -70,11 +73,9 @@ class Player extends FlxSprite {
 
             FlxAngle.rotatePoint(speed, 0, 0, 0, mA, velocity);
 
-            if ((velocity.x != 0 || velocity.y != 0) &&
-                touching == FlxObject.NONE) {
-                // if the player is moving (velocity is not 0 for either axis),
+            if (velocity.x != 0 || velocity.y != 0) {
+                // If the player is moving (velocity is not 0 for either axis),
                 // we need to change the animation to match their facing
-
                 switch(facing) {
                     case FlxObject.LEFT, FlxObject.RIGHT:
                         animation.play("lr");
