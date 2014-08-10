@@ -2,6 +2,7 @@ package ;
 
 import flixel.FlxG;
 import flixel.FlxState;
+import flixel.FlxCamera;
 
 /**
  * A FlxState which can be used for the actual gameplay.
@@ -24,6 +25,9 @@ class PlayState extends FlxState {
 		// Add coins and player
 		add(_map.coins);
 		add(player);
+
+		// Make the camera follow the player
+		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, 1);
 
 		super.create();
 	}
