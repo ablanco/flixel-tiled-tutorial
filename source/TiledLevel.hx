@@ -26,6 +26,7 @@ class TiledLevel extends TiledMap {
     public var foregroundTiles:FlxGroup;
     public var backgroundTiles:FlxGroup;
     public var coins:FlxTypedGroup<Coin>;
+    public var enemies:FlxTypedGroup<Enemy>;
     private var collidableTileLayers:Array<FlxTilemap>;
 
     public function new(tiledLevel:Dynamic) {
@@ -112,6 +113,11 @@ class TiledLevel extends TiledMap {
                     coins = new FlxTypedGroup<Coin>();
                 }
                 coins.add(new Coin(x + 4, y + 4));
+            case "enemy":
+                if (enemies == null) {
+                    enemies = new FlxTypedGroup<Enemy>();
+                }
+                enemies.add(new Enemy(x, y, Std.parseInt(o.custom.get("etype"))));
         }
     }
 

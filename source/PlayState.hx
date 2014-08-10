@@ -25,6 +25,8 @@ class PlayState extends FlxState {
 		// Add coins and player
 		add(_map.coins);
 		add(player);
+		// Add enemies
+		add(_map.enemies);
 
 		// Make the camera follow the player
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, 1);
