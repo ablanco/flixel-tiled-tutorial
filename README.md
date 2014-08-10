@@ -17,7 +17,7 @@ you find it useful.
 ## Build and test
 
 After [installing the environment](http://haxeflixel.com/documentation/install-haxeflixel/),
-you just need to run something like this
+you just need to run something like this:
 
     lime test linux
 
