@@ -25,9 +25,9 @@ class TiledLevel extends TiledMap {
     // Array of tilemaps used for collision
     public var foregroundTiles:FlxGroup;
     public var backgroundTiles:FlxGroup;
+    public var collidableTileLayers:Array<FlxTilemap>;
     public var coins:FlxTypedGroup<Coin>;
     public var enemies:FlxTypedGroup<Enemy>;
-    private var collidableTileLayers:Array<FlxTilemap>;
 
     public function new(tiledLevel:Dynamic) {
         super(tiledLevel);

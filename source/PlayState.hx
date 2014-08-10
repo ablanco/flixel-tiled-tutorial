@@ -53,11 +53,33 @@ class PlayState extends FlxState {
 
 		// Pickup coins
 		FlxG.overlap(player, _map.coins, playerTouchCoin);
+
+		// Make enemies collide with walls and such
+		for (enemy in _map.enemies) {
+			_map.collideWithLevel(enemy);
+		}
+
+		// Check if the enemies see the player
+		_map.enemies.forEachAlive(checkEnemyVision);
 	}
 
 	private function playerTouchCoin(player:Player, coin:Coin):Void {
 		if (player.alive && player.exists && coin.alive && coin.exists) {
 			coin.kill();
+		}
+	}
+
+	private function checkEnemyVision(e:Enemy):Void {
+		e.seesPlayer = true;
+		for (obstacle in _map.collidableTileLayers) {
+			if (obstacle.ray(e.getMidpoint(), player.getMidpoint())) {
+				e.seesPlayer = e.seesPlayer && true;
+			} else {
+				e.seesPlayer = false;
+			}
+		}
+		if (e.seesPlayer) {
+			e.playerPos.copyFrom(player.getMidpoint());
 		}
 	}
 }
