@@ -1,5 +1,6 @@
 package ;
 
+import flixel.FlxG;
 import flixel.FlxState;
 
 /**
@@ -20,6 +21,8 @@ class PlayState extends FlxState {
 		add(_map.backgroundTiles);
 		// Load player objects
 		_map.loadObjects(this);
+		// Add coins and player
+		add(_map.coins);
 		add(player);
 
 		super.create();
@@ -41,5 +44,14 @@ class PlayState extends FlxState {
 
 		// Collide with foreground tile layer
 		_map.collideWithLevel(player);
+
+		// Pickup coins
+		FlxG.overlap(player, _map.coins, playerTouchCoin);
+	}
+
+	private function playerTouchCoin(player:Player, coin:Coin):Void {
+		if (player.alive && player.exists && coin.alive && coin.exists) {
+			coin.kill();
+		}
 	}
 }

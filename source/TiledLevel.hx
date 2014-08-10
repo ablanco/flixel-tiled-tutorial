@@ -5,6 +5,7 @@ import haxe.io.Path;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.group.FlxGroup;
+import flixel.group.FlxTypedGroup;
 import flixel.tile.FlxTilemap;
 
 import flixel.text.FlxText;
@@ -24,6 +25,7 @@ class TiledLevel extends TiledMap {
     // Array of tilemaps used for collision
     public var foregroundTiles:FlxGroup;
     public var backgroundTiles:FlxGroup;
+    public var coins:FlxTypedGroup<Coin>;
     private var collidableTileLayers:Array<FlxTilemap>;
 
     public function new(tiledLevel:Dynamic) {
@@ -105,6 +107,11 @@ class TiledLevel extends TiledMap {
         switch (o.type.toLowerCase()) {
             case "player_start":
                 state.player = new Player(x, y);
+            case "coin":
+                if (coins == null) {
+                    coins = new FlxTypedGroup<Coin>();
+                }
+                coins.add(new Coin(x + 4, y + 4));
         }
     }
 

@@ -3,7 +3,7 @@
  <tileset firstgid="1" name="Tiles" tilewidth="16" tileheight="16">
   <image source="../images/tiles.png" width="48" height="16"/>
  </tileset>
- <layer name="floor" width="40" height="30" visible="0">
+ <layer name="floor" width="40" height="30">
   <properties>
    <property name="nocollide" value="true"/>
    <property name="tileset" value="Tiles"/>
@@ -22,5 +22,18 @@
  </layer>
  <objectgroup name="entities" width="40" height="30">
   <object name="start" type="player_start" x="160" y="176" width="16" height="16"/>
+  <object type="coin" x="240" y="176" width="16" height="16"/>
+  <object type="coin" x="336" y="208" width="16" height="16"/>
+  <object type="coin" x="240" y="224" width="16" height="16"/>
+  <object type="coin" x="256" y="272" width="16" height="16"/>
+  <object type="coin" x="448" y="112" width="16" height="16"/>
+  <object type="coin" x="432" y="176" width="16" height="16"/>
+  <object type="coin" x="448" y="144" width="16" height="16"/>
+  <object type="coin" x="304" y="352" width="16" height="16"/>
+  <object type="coin" x="368" y="384" width="16" height="16"/>
+  <object type="coin" x="400" y="384" width="16" height="16"/>
+  <object type="coin" x="432" y="368" width="16" height="16"/>
+  <object type="coin" x="464" y="384" width="16" height="16"/>
+  <object type="coin" x="400" y="304" width="16" height="16"/>
  </objectgroup>
 </map>
