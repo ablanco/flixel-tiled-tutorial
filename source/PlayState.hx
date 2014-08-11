@@ -10,6 +10,9 @@ import flixel.FlxCamera;
 class PlayState extends FlxState {
 	public var player:Player;
 	private var _map:TiledLevel;
+	private var _hud:HUD;
+	private var _money:Int = 0;
+	private var _health:Int = 3;
 
 	/**
 	 * Function that is called up when to state is created to set it up.
@@ -27,9 +30,11 @@ class PlayState extends FlxState {
 		add(player);
 		// Add enemies
 		add(_map.enemies);
-
 		// Make the camera follow the player
 		FlxG.camera.follow(player, FlxCamera.STYLE_TOPDOWN, 1);
+		// Prepare the HUD
+		_hud = new HUD();
+		add(_hud);
 
 		super.create();
 	}
@@ -66,6 +71,8 @@ class PlayState extends FlxState {
 	private function playerTouchCoin(player:Player, coin:Coin):Void {
 		if (player.alive && player.exists && coin.alive && coin.exists) {
 			coin.kill();
+			_money++;
+			_hud.updateHUD(_health, _money);
 		}
 	}
 
