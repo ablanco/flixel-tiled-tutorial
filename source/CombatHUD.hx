@@ -143,6 +143,7 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
         _results.visible = false;
         outcome = NONE;
         _selected = 0;
+        movePointer();
 
         visible = true; // make our hud visible (so draw gets called on it) - note, it's not active, yet!
 
