@@ -53,5 +53,7 @@
    </properties>
    <ellipse/>
   </object>
+  <object type="coin" x="288" y="400" width="16" height="16"/>
+  <object type="coin" x="272" y="208" width="16" height="16"/>
  </objectgroup>
 </map>

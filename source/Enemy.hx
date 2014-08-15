@@ -1,12 +1,14 @@
 package ;
 
 import flixel.FlxG;
-import flixel.FlxSprite;
 import flixel.FlxObject;
+import flixel.FlxSprite;
 import flixel.util.FlxAngle;
 import flixel.util.FlxPoint;
 import flixel.util.FlxRandom;
 import flixel.util.FlxVelocity;
+
+using flixel.util.FlxSpriteUtil;
 
 class Enemy extends FlxSprite {
     public var speed:Int = 140;
@@ -93,7 +95,19 @@ class Enemy extends FlxSprite {
     }
 
     override public function update():Void {
+        if (isFlickering()) {
+            // Is stunned after enemy fleeing, do not move
+            return;
+        }
+
         _brain.update();
         super.update();
+    }
+
+    public function changeEnemy(EType:Int):Void {
+        if (etype != EType) {
+            etype = EType;
+            loadGraphic("assets/images/enemy-" + Std.string(etype) + ".png", true, 16, 16);
+        }
     }
 }
