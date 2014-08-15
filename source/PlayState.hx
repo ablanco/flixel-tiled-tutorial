@@ -3,6 +3,8 @@ package ;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.FlxCamera;
+import flixel.util.FlxColor;
+import flixel.util.FlxDestroyUtil;
 
 using flixel.util.FlxSpriteUtil;
 
@@ -17,6 +19,8 @@ class PlayState extends FlxState {
     private var _health:Int = 3;
     private var _inCombat:Bool = false;
     private var _combatHud:CombatHUD;
+    private var _ending:Bool;
+    private var _won:Bool;
 
     /**
      * Function that is called up when to state is created to set it up.
@@ -52,6 +56,11 @@ class PlayState extends FlxState {
      */
     override public function destroy():Void {
         super.destroy();
+
+        player = FlxDestroyUtil.destroy(player);
+        // _map = FlxDestroyUtil.destroy(_map);
+        _hud = FlxDestroyUtil.destroy(_hud);
+        _combatHud = FlxDestroyUtil.destroy(_combatHud);
     }
 
     /**
@@ -59,6 +68,8 @@ class PlayState extends FlxState {
      */
     override public function update():Void {
         super.update();
+
+        if (_ending) { return; }
 
         if (!_inCombat) {
             // Collide with foreground tile layer
@@ -79,10 +90,21 @@ class PlayState extends FlxState {
                 // Combat finished
                 _health = _combatHud.playerHealth;
                 _hud.updateHUD(_health, _money);
-                if (_combatHud.outcome == VICTORY) {
-                    _combatHud.e.kill();
+                if (_combatHud.outcome == DEFEAT) {
+                    _ending = true;
+                    FlxG.camera.fade(FlxColor.BLACK, .33, false, doneFadeOut);
                 } else {
-                    _combatHud.e.flicker();
+                    if (_combatHud.outcome == VICTORY) {
+                        _combatHud.e.kill();
+                        if (_combatHud.e.etype == 1) {
+                            // Boss was defeated
+                            _won = true;
+                            _ending = true;
+                            FlxG.camera.fade(FlxColor.BLACK, .33, false, doneFadeOut);
+                        }
+                    } else {
+                        _combatHud.e.flicker();
+                    }
                 }
                 _inCombat = false;
                 player.active = true;
@@ -120,5 +142,9 @@ class PlayState extends FlxState {
         if (e.seesPlayer) {
             e.playerPos.copyFrom(player.getMidpoint());
         }
+    }
+
+    private function doneFadeOut():Void {
+        FlxG.switchState(new GameOverState(_won, _money));
     }
 }

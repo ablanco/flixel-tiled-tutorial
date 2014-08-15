@@ -9,6 +9,7 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
+import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxRandom;
 
 using flixel.util.FlxSpriteUtil;
@@ -340,9 +341,7 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
      * This function is triggered when our results text has finished fading in. If we're not defeated, we will fade out the entire HUD after a short delay
      */
     private function doneResultsIn(_):Void {
-        if (outcome != DEFEAT) {
-            FlxTween.num(1, 0, .66, { ease:FlxEase.circOut, complete:finishFadeOut, startDelay:1 }, updateAlpha);
-        }
+        FlxTween.num(1, 0, .66, { ease:FlxEase.circOut, complete:finishFadeOut, startDelay:1 }, updateAlpha);
     }
 
     /**
@@ -374,6 +373,20 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
             _wait = false;
             _pointer.visible = true;
         }
+    }
+
+    override public function destroy():Void {
+        super.destroy();
+        e = FlxDestroyUtil.destroy(e);
+        _sprBack = FlxDestroyUtil.destroy(_sprBack);
+        _sprPlayer = FlxDestroyUtil.destroy(_sprPlayer);
+        _sprEnemy = FlxDestroyUtil.destroy(_sprEnemy);
+        _enemyHealthBar = FlxDestroyUtil.destroy(_enemyHealthBar);
+        _txtPlayerHealth = FlxDestroyUtil.destroy(_txtPlayerHealth);
+        _damages = FlxDestroyUtil.destroyArray(_damages);
+        _pointer = FlxDestroyUtil.destroy(_pointer);
+        _choices = FlxDestroyUtil.destroyArray(_choices);
+        _results = FlxDestroyUtil.destroy(_results);
     }
 }
 
