@@ -56,11 +56,19 @@ class Main extends Sprite {
             gameHeight = Math.ceil(stageHeight / zoom);
         }
 
-        addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));
-
         // Restore saved options
         var _save:FlxSave = new FlxSave();
         _save.bind('flixel-tutorial');
+        #if desktop
+        if (_save.data.fullscreen != null) {
+            startFullscreen = _save.data.fullscreen;
+        }
+        #end
+
+        // Start game
+        addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));
+
+        // Restore volume from save
         if (_save.data.volume != null) {
             FlxG.sound.volume = _save.data.volume;
         }

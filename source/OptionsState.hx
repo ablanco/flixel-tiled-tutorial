@@ -20,6 +20,9 @@ class OptionsState extends FlxState {
     private var _btnVolumeUp:FlxButton;
     private var _btnClearData:FlxButton;
     private var _btnBack:FlxButton;
+    #if desktop
+    private var _btnFullScreen:FlxButton;
+    #end
 
     // a save object for saving settings
     private var _save:FlxSave;
@@ -50,6 +53,12 @@ class OptionsState extends FlxState {
         _barVolume = new FlxBar(_btnVolumeDown.x + _btnVolumeDown.width + 4, _btnVolumeDown.y, FlxBar.FILL_LEFT_TO_RIGHT, Std.int(FlxG.width - 64), Std.int(_btnVolumeUp.height));
         _barVolume.createFilledBar(FlxColor.CHARCOAL, FlxColor.WHITE, true, FlxColor.WHITE);
         add(_barVolume);
+
+        #if desktop
+        _btnFullScreen = new FlxButton(0, _barVolume.y + _barVolume.height + 8, FlxG.fullscreen ? 'WINDOWED' : 'FULLSCREEN', clickFullscreen);
+        _btnFullScreen.screenCenter(true, false);
+        add(_btnFullScreen);
+        #end
 
         _txtVolumeAmt = new FlxText(0, 0, 200, Std.string( FlxG.sound.volume * 100) + '%', 8);
         _txtVolumeAmt.alignment = 'center';
@@ -121,6 +130,14 @@ class OptionsState extends FlxState {
         _txtVolumeAmt.text = Std.string(vol) + '%';
     }
 
+    #if desktop
+    private function clickFullscreen():Void {
+        FlxG.fullscreen = !FlxG.fullscreen;
+        _btnFullScreen.text = FlxG.fullscreen ? 'WINDOWED' : 'FULLSCREEN';
+        _save.data.fullscreen = FlxG.fullscreen;
+    }
+    #end
+
     override public function destroy():Void {
         super.destroy();
 
@@ -133,6 +150,9 @@ class OptionsState extends FlxState {
         _btnVolumeUp = FlxDestroyUtil.destroy(_btnVolumeUp);
         _btnClearData = FlxDestroyUtil.destroy(_btnClearData);
         _btnBack = FlxDestroyUtil.destroy(_btnBack);
+        #if desktop
+        _btnFullScreen = FlxDestroyUtil.destroy(_btnFullScreen);
+        #end
         _save.destroy();
         _save = null;
     }

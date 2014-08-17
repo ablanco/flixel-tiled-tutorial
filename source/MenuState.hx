@@ -1,5 +1,7 @@
 package ;
 
+import flash.system.System;
+
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.text.FlxText;
@@ -15,6 +17,9 @@ class MenuState extends FlxState {
     private var _btnPlay:FlxButton;
     private var _txtTitle:FlxText;
     private var _btnOptions:FlxButton;
+    #if desktop
+    private var _btnExit:FlxButton;
+    #end
 
     /**
      * Function that is called up when to state is created to set it up.
@@ -37,6 +42,12 @@ class MenuState extends FlxState {
         add(_btnOptions);
         _btnOptions.onUp.sound = FlxG.sound.load(AssetPaths.select__wav);
 
+        #if desktop
+        _btnExit = new FlxButton(FlxG.width - 28, 8, "X", clickExit);
+        _btnExit.loadGraphic(AssetPaths.button__png, true, 20, 20);
+        add(_btnExit);
+        #end
+
         super.create();
     }
 
@@ -50,6 +61,9 @@ class MenuState extends FlxState {
         _txtTitle = FlxDestroyUtil.destroy(_txtTitle);
         _btnPlay = FlxDestroyUtil.destroy(_btnPlay);
         _btnOptions = FlxDestroyUtil.destroy(_btnOptions);
+        #if desktop
+        _btnExit = FlxDestroyUtil.destroy(_btnExit);
+        #end
     }
 
     /**
@@ -66,4 +80,10 @@ class MenuState extends FlxState {
     private function clickOptions():Void {
         FlxG.switchState(new OptionsState());
     }
+
+    #if desktop
+    private function clickExit():Void {
+        System.exit(0);
+    }
+    #end
 }
