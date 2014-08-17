@@ -3,7 +3,9 @@ package ;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
+import flixel.system.FlxSound;
 import flixel.util.FlxAngle;
+import flixel.util.FlxDestroyUtil;
 import flixel.util.FlxPoint;
 import flixel.util.FlxRandom;
 import flixel.util.FlxVelocity;
@@ -19,6 +21,7 @@ class Enemy extends FlxSprite {
     private var _brain:FSM;
     private var _idleTmr:Float;
     private var _moveDir:Float;
+    private var _sndStep:FlxSound;
 
     public function new(X:Float=0, Y:Float=0, EType:Int) {
         super(X, Y);
@@ -38,6 +41,8 @@ class Enemy extends FlxSprite {
         _brain = new FSM(idle);
         _idleTmr = 0;
         playerPos = FlxPoint.get();
+        _sndStep = FlxG.sound.load(AssetPaths.step__wav, .4);
+        _sndStep.proximity(x, y, FlxG.camera.target, FlxG.width * .6);
     }
 
     override public function draw():Void {
@@ -64,6 +69,9 @@ class Enemy extends FlxSprite {
                 case FlxObject.DOWN:
                     animation.play("d");
             }
+
+            _sndStep.setPosition(x + _halfWidth, y + height);
+            _sndStep.play();
         }
 
         super.draw();
@@ -109,5 +117,11 @@ class Enemy extends FlxSprite {
             etype = EType;
             loadGraphic("assets/images/enemy-" + Std.string(etype) + ".png", true, 16, 16);
         }
+    }
+
+    override public function destroy():Void {
+        super.destroy();
+
+        _sndStep = FlxDestroyUtil.destroy(_sndStep);
     }
 }

@@ -58,11 +58,15 @@ class Main extends Sprite {
 
         addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));
 
+        // Restore saved options
         var _save:FlxSave = new FlxSave();
         _save.bind('flixel-tutorial');
         if (_save.data.volume != null) {
             FlxG.sound.volume = _save.data.volume;
         }
         _save.close();
+
+        // Play bg music in an infinite loop
+        FlxG.sound.playMusic(AssetPaths.HaxeFlixel_Tutorial_Game__ogg, 1, true);
     }
 }

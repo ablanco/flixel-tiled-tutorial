@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.group.FlxTypedGroup;
+import flixel.system.FlxSound;
 import flixel.text.FlxText;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
@@ -43,6 +44,15 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
 
     private var _alpha:Float = 0;   // we will use this to fade in and out our combat hud
     private var _wait:Bool = true;  // this flag will be set to true when don't want the player to be able to do anything (between turns)
+
+    // Sounds
+    private var _sndFled:FlxSound;
+    private var _sndHurt:FlxSound;
+    private var _sndLose:FlxSound;
+    private var _sndMiss:FlxSound;
+    private var _sndSelect:FlxSound;
+    private var _sndWin:FlxSound;
+    private var _sndCombat:FlxSound;
 
     public function new() {
         super();
@@ -119,6 +129,15 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
         // mark this object as not active and not visible so update and draw don't get called on it until we're ready to show it.
         active = false;
         visible = false;
+
+        // Load sounds
+        _sndFled = FlxG.sound.load(AssetPaths.fled__wav);
+        _sndHurt = FlxG.sound.load(AssetPaths.hurt__wav);
+        _sndLose = FlxG.sound.load(AssetPaths.lose__wav);
+        _sndMiss = FlxG.sound.load(AssetPaths.miss__wav);
+        _sndSelect = FlxG.sound.load(AssetPaths.select__wav);
+        _sndWin = FlxG.sound.load(AssetPaths.win__wav);
+        _sndCombat = FlxG.sound.load(AssetPaths.combat__wav);
     }
 
     /**
@@ -127,6 +146,7 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
      * @param   E               This links back to the Enemy we are fighting with so we can get it's health and type (to change our sprite).
      */
     public function initCombat(PlayerHealth:Int, E:Enemy):Void {
+        _sndCombat.play();
         playerHealth = PlayerHealth;    // we set our playerHealth variable to the value that was passed to us
         e = E;  // set our enemy object to the one passed to us
 
@@ -169,6 +189,7 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
         active = true;
         _wait = false;
         _pointer.visible = true;
+        _sndSelect.play();
     }
 
     /**
@@ -204,6 +225,8 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
             } else if (FlxG.keys.anyJustReleased(["S", "DOWN"])) {
                 _down = true;
             }
+
+            if (_fire || _up || _down) { _sndSelect.play(); }
 
             // based on which flags are set, do the specified action
             if (_fire) {
@@ -248,11 +271,13 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
                 if (FlxRandom.chanceRoll(85)) {
                     // if they hit, deal 1 damage to the enemy, and setup our damage indicator
                     _damages[1].text = "1";
+                    _sndHurt.play();
                     _enemyHealth--;
                     _enemyHealthBar.currentValue = (_enemyHealth / _enemyMaxHealth) * 100; // change the enemy's health bar
                 } else {
                     // change our damage text to show that we missed!
                     _damages[1].text = "MISS!";
+                    _sndMiss.play();
                 }
 
                 // position the damage text over the enemy, and set it's alpha to 0 but it's visible to true (so that it gets draw called on it)
@@ -277,6 +302,7 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
                     // if they succeed, we show the 'escaped' message and trigger it to fade in
                     outcome = ESCAPE;
                     _results.text = "ESCAPED!";
+                    _sndFled.play();
                     _results.visible = true;
                     _results.alpha = 0;
                     FlxTween.tween(_results, { alpha:1 }, .66, { ease:FlxEase.circInOut, complete:doneResultsIn } );
@@ -303,9 +329,11 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
             _damages[0].text = "1";
             playerHealth--;
             updatePlayerHealth();
+            _sndHurt.play();
         } else {
             // if the enemy misses, show it on the screen
             _damages[0].text = "MISS!";
+            _sndMiss.play();
         }
 
         // setup the combat text to show up over the player and fade in/raise up
@@ -357,6 +385,7 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
         if (playerHealth <= 0) {
             // if the player's health is 0, we show the defeat message on the screen and fade it in
             outcome = DEFEAT;
+            _sndLose.play();
             _results.text = "DEFEAT!";
             _results.visible = true;
             _results.alpha = 0;
@@ -364,6 +393,7 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
         } else if (_enemyHealth <= 0) {
             // if the enemy's health is 0, we show the victory message
             outcome = VICTORY;
+            _sndWin.play();
             _results.text = "VICTORY!";
             _results.visible = true;
             _results.alpha = 0;
@@ -387,6 +417,13 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
         _pointer = FlxDestroyUtil.destroy(_pointer);
         _choices = FlxDestroyUtil.destroyArray(_choices);
         _results = FlxDestroyUtil.destroy(_results);
+        _sndFled = FlxDestroyUtil.destroy(_sndFled);
+        _sndHurt = FlxDestroyUtil.destroy(_sndHurt);
+        _sndLose = FlxDestroyUtil.destroy(_sndLose);
+        _sndMiss = FlxDestroyUtil.destroy(_sndMiss);
+        _sndSelect = FlxDestroyUtil.destroy(_sndSelect);
+        _sndWin = FlxDestroyUtil.destroy(_sndWin);
+        _sndCombat = FlxDestroyUtil.destroy(_sndCombat);
     }
 }
 

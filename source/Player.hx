@@ -1,13 +1,16 @@
 package ;
 
 import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.util.FlxColor;
-import flixel.util.FlxAngle;
 import flixel.FlxObject;
+import flixel.FlxSprite;
+import flixel.system.FlxSound;
+import flixel.util.FlxAngle;
+import flixel.util.FlxColor;
+import flixel.util.FlxDestroyUtil;
 
 class Player extends FlxSprite {
     public var speed:Float = 200;
+    private var _sndStep:FlxSound;
 
     public function new(X:Float=0, Y:Float=0) {
         super(X, Y);
@@ -23,6 +26,8 @@ class Player extends FlxSprite {
         // Change the hitbox so he can make it through doors and such
         setSize(8, 14);
         offset.set(4, 2);
+
+        _sndStep = FlxG.sound.load(AssetPaths.step__wav);
     }
 
     override public function update():Void {
@@ -73,7 +78,7 @@ class Player extends FlxSprite {
 
             FlxAngle.rotatePoint(speed, 0, 0, 0, mA, velocity);
 
-            if (velocity.x != 0 || velocity.y != 0) {
+            if ((velocity.x != 0 || velocity.y != 0) && touching == FlxObject.NONE) {
                 // If the player is moving (velocity is not 0 for either axis),
                 // we need to change the animation to match their facing
                 switch(facing) {
@@ -84,7 +89,14 @@ class Player extends FlxSprite {
                     case FlxObject.DOWN:
                         animation.play("d");
                 }
+                _sndStep.play();
             }
         }
+    }
+
+    override public function destroy():Void {
+        super.destroy();
+
+        _sndStep = FlxDestroyUtil.destroy(_sndStep);
     }
 }

@@ -39,10 +39,12 @@ class OptionsState extends FlxState {
         // the volume buttons will be smaller than 'default' buttons
         _btnVolumeDown = new FlxButton(8, _txtVolume.y + _txtVolume.height + 2, '-', clickVolumeDown);
         _btnVolumeDown.loadGraphic(AssetPaths.button__png, true, 20,20);
+        _btnVolumeDown.onUp.sound = FlxG.sound.load(AssetPaths.select__wav);
         add(_btnVolumeDown);
 
         _btnVolumeUp = new FlxButton(FlxG.width - 28, _btnVolumeDown.y, '+', clickVolumeUp);
         _btnVolumeUp.loadGraphic(AssetPaths.button__png, true, 20,20);
+        _btnVolumeUp.onUp.sound = FlxG.sound.load(AssetPaths.select__wav);
         add(_btnVolumeUp);
 
         _barVolume = new FlxBar(_btnVolumeDown.x + _btnVolumeDown.width + 4, _btnVolumeDown.y, FlxBar.FILL_LEFT_TO_RIGHT, Std.int(FlxG.width - 64), Std.int(_btnVolumeUp.height));
@@ -58,9 +60,11 @@ class OptionsState extends FlxState {
         add(_txtVolumeAmt);
 
         _btnClearData = new FlxButton((FlxG.width / 2) - 90, FlxG.height - 28, 'Clear Data', clickClearData);
+        _btnClearData.onUp.sound = FlxG.sound.load(AssetPaths.select__wav);
         add(_btnClearData);
 
         _btnBack = new FlxButton((FlxG.width/2)+10, FlxG.height-28, 'Back', clickBack);
+        _btnBack.onUp.sound = FlxG.sound.load(AssetPaths.select__wav);
         add(_btnBack);
 
         // create and bind our save object to 'flixel-tutorial'

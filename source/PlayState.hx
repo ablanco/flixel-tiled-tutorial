@@ -3,6 +3,7 @@ package ;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.FlxCamera;
+import flixel.system.FlxSound;
 import flixel.util.FlxColor;
 import flixel.util.FlxDestroyUtil;
 
@@ -21,6 +22,7 @@ class PlayState extends FlxState {
     private var _combatHud:CombatHUD;
     private var _ending:Bool;
     private var _won:Bool;
+    private var _sndCoin:FlxSound;
 
     /**
      * Function that is called up when to state is created to set it up.
@@ -34,6 +36,7 @@ class PlayState extends FlxState {
         // Load player objects
         _map.loadObjects(this);
         // Add coins and player
+        _sndCoin = FlxG.sound.load(AssetPaths.coin__wav);
         add(_map.coins);
         add(player);
         // Add enemies
@@ -61,6 +64,7 @@ class PlayState extends FlxState {
         // _map = FlxDestroyUtil.destroy(_map);
         _hud = FlxDestroyUtil.destroy(_hud);
         _combatHud = FlxDestroyUtil.destroy(_combatHud);
+        _sndCoin = FlxDestroyUtil.destroy(_sndCoin);
     }
 
     /**
@@ -116,6 +120,7 @@ class PlayState extends FlxState {
     private function playerTouchCoin(player:Player, coin:Coin):Void {
         if (player.alive && player.exists && coin.alive && coin.exists) {
             coin.kill();
+            _sndCoin.play(true);
             _money++;
             _hud.updateHUD(_health, _money);
         }
