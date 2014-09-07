@@ -6,8 +6,12 @@ import flixel.FlxCamera;
 import flixel.system.FlxSound;
 import flixel.util.FlxColor;
 import flixel.util.FlxDestroyUtil;
+#if mobile
+import flixel.ui.FlxVirtualPad;
+#end
 
 using flixel.util.FlxSpriteUtil;
+
 
 /**
  * A FlxState which can be used for the actual gameplay.
@@ -23,6 +27,9 @@ class PlayState extends FlxState {
     private var _ending:Bool;
     private var _won:Bool;
     private var _sndCoin:FlxSound;
+    #if mobile
+    public static var virtualPad:FlxVirtualPad;
+    #end
 
     /**
      * Function that is called up when to state is created to set it up.
@@ -49,6 +56,11 @@ class PlayState extends FlxState {
         // And the combat
         _combatHud = new CombatHUD();
         add(_combatHud);
+        // Virtual gamepad for mobile platforms
+        #if mobile
+        virtualPad = new FlxVirtualPad(FULL, NONE);
+        add(virtualPad);
+        #end
 
         super.create();
     }
@@ -65,6 +77,9 @@ class PlayState extends FlxState {
         _hud = FlxDestroyUtil.destroy(_hud);
         _combatHud = FlxDestroyUtil.destroy(_combatHud);
         _sndCoin = FlxDestroyUtil.destroy(_sndCoin);
+        #if mobile
+        virtualPad = FlxDestroyUtil.destroy(virtualPad);
+        #end
     }
 
     /**
@@ -111,6 +126,9 @@ class PlayState extends FlxState {
                     }
                 }
                 _inCombat = false;
+                #if mobile
+                virtualPad.visible = true;
+                #end
                 player.active = true;
                 _map.enemies.active = true;
             }
@@ -131,6 +149,9 @@ class PlayState extends FlxState {
             _inCombat = true;
             player.active = false;
             _map.enemies.active = false;
+            #if mobile
+            virtualPad.visible = false;
+            #end
             _combatHud.initCombat(_health, E);
         }
     }

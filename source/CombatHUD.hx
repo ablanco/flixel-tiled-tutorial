@@ -210,6 +210,7 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
 
     override public function update():Void {
         if (!_wait) {
+            #if !FLX_NO_KEYBOARD
             // if we're waiting, don't do any of this.
 
             // setup some simple flags to see which keys are pressed.
@@ -246,6 +247,28 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
                     _selected++;
                 movePointer();
             }
+            #end
+
+            #if !FLX_NO_TOUCH
+            var didSelect:Bool = false;
+            for (touch in FlxG.touches.justReleased()) {
+                if (!didSelect) {
+                    if (touch.overlaps(_choices[0])) {
+                        didSelect = true;
+                        _sndSelect.play();
+                        _selected = 0;
+                        movePointer();
+                        makeChoice();
+                    } else if (touch.overlaps(_choices[1])) {
+                        didSelect = true;
+                        _sndSelect.play();
+                        _selected = 1;
+                        movePointer();
+                        makeChoice();
+                    }
+                }
+            }
+            #end
         }
         super.update();
     }
