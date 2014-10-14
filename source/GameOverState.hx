@@ -67,6 +67,7 @@ class GameOverState extends FlxState {
         _btnMainMenu.onUp.sound = FlxG.sound.load(AssetPaths.select__wav);
         add(_btnMainMenu);
 
+        FlxG.camera.fade(FlxColor.BLACK, .33, true);
         super.create();
     }
 
@@ -96,7 +97,7 @@ class GameOverState extends FlxState {
      * When the user hits the main menu button, it should fade out and then take them back to the MenuState
      */
     private function goMainMenu():Void {
-        FlxG.camera.fade(FlxColor.BLACK, .66, false, function() {
+        FlxG.camera.fade(FlxColor.BLACK, .33, false, function() {
             FlxG.switchState(new MenuState());
         });
     }

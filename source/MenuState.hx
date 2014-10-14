@@ -6,6 +6,7 @@ import flixel.FlxG;
 import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
+import flixel.util.FlxColor;
 import flixel.util.FlxDestroyUtil;
 
 using flixel.util.FlxSpriteUtil;
@@ -48,6 +49,7 @@ class MenuState extends FlxState {
         add(_btnExit);
         #end
 
+        FlxG.camera.fade(FlxColor.BLACK, .33, true);
         super.create();
     }
 
@@ -74,11 +76,15 @@ class MenuState extends FlxState {
     }
 
     private function clickPlay():Void {
-        FlxG.switchState(new PlayState());
+        FlxG.camera.fade(FlxColor.BLACK, .33, false, function() {
+            FlxG.switchState(new PlayState());
+        });
     }
 
     private function clickOptions():Void {
-        FlxG.switchState(new OptionsState());
+        FlxG.camera.fade(FlxColor.BLACK, .33, false, function() {
+            FlxG.switchState(new OptionsState());
+        });
     }
 
     #if desktop

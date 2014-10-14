@@ -62,6 +62,7 @@ class PlayState extends FlxState {
         add(virtualPad);
         #end
 
+        FlxG.camera.fade(FlxColor.BLACK, .33, true);
         super.create();
     }
 
