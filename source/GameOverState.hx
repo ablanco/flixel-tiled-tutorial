@@ -67,6 +67,11 @@ class GameOverState extends FlxState {
         _btnMainMenu.onUp.sound = FlxG.sound.load(AssetPaths.select__wav);
         add(_btnMainMenu);
 
+        // If there is a mouse cursor, restore it
+        #if !FLX_NO_MOUSE
+        FlxG.mouse.visible = true;
+        #end
+
         FlxG.camera.fade(FlxColor.BLACK, .33, true);
         super.create();
     }

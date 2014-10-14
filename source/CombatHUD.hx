@@ -1,8 +1,13 @@
 package ;
 
+import flash.geom.Matrix;
+import flash.geom.Point;
+import flash.filters.ColorMatrixFilter;
+
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
+import flixel.addons.effects.FlxWaveSprite;
 import flixel.group.FlxTypedGroup;
 import flixel.system.FlxSound;
 import flixel.text.FlxText;
@@ -45,6 +50,9 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
     private var _alpha:Float = 0;   // we will use this to fade in and out our combat hud
     private var _wait:Bool = true;  // this flag will be set to true when don't want the player to be able to do anything (between turns)
 
+    private var _sprScreen:FlxSprite;   // neat bg effect for the combat
+    private var _sprWave:FlxWaveSprite; // idem
+
     // Sounds
     private var _sndFled:FlxSound;
     private var _sndHurt:FlxSound;
@@ -56,6 +64,11 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
 
     public function new() {
         super();
+
+        // animated combat background, to show under the combat hud
+        _sprScreen = new FlxSprite().makeGraphic(FlxG.width, FlxG.height, FlxColor.TRANSPARENT);
+        _sprWave = new FlxWaveSprite(_sprScreen, WaveMode.ALL, 4, -1, 4);
+        add(_sprWave);
 
         // first, create our background. Make a black square, then draw borders onto it in white. Add it to our group.
         _sprBack = new FlxSprite().makeGraphic(120, 120, FlxColor.WHITE);
@@ -146,6 +159,15 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
      * @param   E               This links back to the Enemy we are fighting with so we can get it's health and type (to change our sprite).
      */
     public function initCombat(PlayerHealth:Int, E:Enemy):Void {
+        // desaturate and animate background
+        _sprScreen.pixels.draw(FlxG.camera.canvas, new Matrix(1, 0, 0, 1, 0, 0));
+        var rc:Float = 1 / 3;
+        var gc:Float = 1 / 2;
+        var bc:Float = 1 / 6;
+        _sprScreen.pixels.applyFilter(_sprScreen.pixels, _sprScreen.pixels.rect, new Point(), new ColorMatrixFilter([rc, gc, bc, 0, 0, rc, gc, bc, 0, 0, rc, gc, bc, 0, 0, 0, 0, 0, 1, 0]));
+        _sprScreen.resetFrameBitmapDatas();
+        _sprScreen.dirty = true;
+
         _sndCombat.play();
         playerHealth = PlayerHealth;    // we set our playerHealth variable to the value that was passed to us
         e = E;  // set our enemy object to the one passed to us
@@ -294,6 +316,9 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
                 if (FlxRandom.chanceRoll(85)) {
                     // if they hit, deal 1 damage to the enemy, and setup our damage indicator
                     _damages[1].text = "1";
+                    FlxTween.tween(_sprEnemy, { x: _sprEnemy.x + 4}, .1, { complete: function(_) {
+                        FlxTween.tween(_sprEnemy, { x: _sprEnemy.x - 4 }, .1);
+                    }});
                     _sndHurt.play();
                     _enemyHealth--;
                     _enemyHealthBar.currentValue = (_enemyHealth / _enemyMaxHealth) * 100; // change the enemy's health bar
@@ -347,8 +372,10 @@ class CombatHUD extends FlxTypedGroup<FlxSprite> {
     private function enemyAttack():Void {
         // first, lets see if the enemy hits or not. We'll give him a 30% chance to hit
         if (FlxRandom.chanceRoll(30)) {
-            // if we hit, flash the screen white, and deal one damage to the player - then update the player's health
+            // if we hit, flash and shake the screen white, and deal one damage
+            // to the player - then update the player's health
             FlxG.camera.flash(FlxColor.WHITE, .2);
+            FlxG.camera.shake(.01, .2);
             _damages[0].text = "1";
             playerHealth--;
             updatePlayerHealth();

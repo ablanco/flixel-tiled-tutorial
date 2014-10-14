@@ -61,6 +61,10 @@ class PlayState extends FlxState {
         virtualPad = new FlxVirtualPad(FULL, NONE);
         add(virtualPad);
         #end
+        // If there is a mouse cursor, hide it
+        #if !FLX_NO_MOUSE
+        FlxG.mouse.visible = false;
+        #end
 
         FlxG.camera.fade(FlxColor.BLACK, .33, true);
         super.create();
